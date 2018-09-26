@@ -192,6 +192,14 @@ class cifar10vgg:
                             steps_per_epoch=x_train.shape[0] // batch_size,
                             epochs=maxepoches,
                             validation_data=(x_test, y_test),callbacks=[reduce_lr],verbose=2)
+        
+        acc, val_acc = model.history['acc'], model.history['val_acc']
+        loss, val_loss = model.history['loss'], model.history['val_loss']
+
+        np.savetxt('acc.txt', acc, delimiter='\n')
+        np.savetxt('val_acc.txt', val_acc, delimiter='\n')
+        np.savetxt('loss.txt', loss, delimiter='\n')
+        np.savetxt('val_loss.txt', val_loss, delimiter='\n')
         model.save_weights('cifar10vgg.h5')
         return model
 
@@ -206,7 +214,7 @@ if __name__ == '__main__':
     y_test = keras.utils.to_categorical(y_test, 10)
 
     model = cifar10vgg()
-
+    
     predicted_x = model.predict(x_test)
     residuals = np.argmax(predicted_x,1)!=np.argmax(y_test,1)
 
